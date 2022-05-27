@@ -1,3 +1,4 @@
+const { FirebaseError } = require("firebase/app");
 const {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -38,16 +39,19 @@ exports.login = async (req, res) => {
 };
 exports.isAuth = async (req, res) => {
   try {
-    await auth
-      .getUser(req.body.uid)
-      .then((userRecord) => {
-        console.log(`Successfully fetched user data: ${userRecord.toJSON()}`);
-        res.send(true);
-      })
-      .catch((error) => {
-        console.log("Error fetching user data:", error);
-        res.send(false);
+    const user = auth.currentUser;
+    if (user !== null) {
+      user.providerData.forEach((profile) => {
+        console.log("Sign-in provider: " + profile.providerId);
+        console.log("  Provider-specific UID: " + profile.uid);
+        console.log("  Name: " + profile.displayName);
+        console.log("  Email: " + profile.email);
+        console.log("  Photo URL: " + profile.photoURL);
       });
+      res.send(true);
+    } else {
+      res.send(false);
+    }
   } catch (error) {
     console.log(error);
     res.send(false);
