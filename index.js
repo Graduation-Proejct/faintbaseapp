@@ -22,6 +22,6 @@ app.use("/", dbRoute);
 app.get("/", (req, res) => {
   res.send("server is running");
 });
-app.listen(8080, function () {
+app.listen(process.env.PORT||8080, function () {
   console.log("Server running");
 });
