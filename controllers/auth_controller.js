@@ -59,6 +59,8 @@ exports.isAuth = async (req, res) => {
         res.send(false);
       }
     } else {
+      console.log("user is null");
+
       res.send(false);
     }
   } catch (error) {
