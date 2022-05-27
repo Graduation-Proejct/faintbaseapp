@@ -111,7 +111,7 @@ async function userSignup(req, res) {
     await writeUserData(users.length, my_user, req.body.password, res);
   } else {
     console.log("user is found in database");
-    res.send(false);
+    res.send({UID:"error"});
   }
 }
 async function getDatabaseUsers() {
