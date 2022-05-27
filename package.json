@@ -1,20 +1,19 @@
 {
-  "name": "backend",
+  "name": "faintbaseapp",
   "version": "1.0.0",
-  "description": "not now",
+  "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "gp",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Graduation-Proejct/faintbaseapp.git"
+  },
+  "author": "",
   "license": "ISC",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.18.1",
-    "firebase": "^9.7.0",
-    "nodemon": "^2.0.15",
-    "socket.io": "^4.4.1"
-  }
+  "bugs": {
+    "url": "https://github.com/Graduation-Proejct/faintbaseapp/issues"
+  },
+  "homepage": "https://github.com/Graduation-Proejct/faintbaseapp#readme"
 }
