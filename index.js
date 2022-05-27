@@ -20,7 +20,7 @@ app.use(function (req, res, next) {
 
 app.use("/", dbRoute);
 app.get("/", (req, res) => {
-  res.send("Server is running");
+  res.send("Server is running!");
 });
 app.listen(8080, function () {
   console.log("Server running");
