@@ -7,7 +7,8 @@ let UserDb = class UserDb {
     emailList,
     questions,
     medicalHistory,
-    files
+    files,
+    UID
   ) {
     this.name = name;
     this.email = email;
@@ -17,6 +18,7 @@ let UserDb = class UserDb {
     this.questions = questions;
     this.medicalHistory = medicalHistory;
     this.files = files;
+    this.UID = UID;
   }
   //getters
   get name() {
@@ -43,6 +45,9 @@ let UserDb = class UserDb {
   get files() {
     return this._files;
   }
+  get UID(){
+    return this._UID;
+  }
   //setters
   set name(value) {
     this._name = value;
@@ -67,6 +72,9 @@ let UserDb = class UserDb {
   }
   set files(value) {
     this._files = value;
+  }
+  set UID(value) {
+    this._UID = value;
   }
 };
 module.exports.UserDb = UserDb;
