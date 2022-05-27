@@ -37,17 +37,19 @@ exports.login = async (req, res) => {
     });
 };
 exports.isAuth = async (req, res) => {
- try{ await auth
-    .getUser(req.body.uid)
-    .then((userRecord) => {
-      console.log(`Successfully fetched user data: ${userRecord.toJSON()}`);
-      res.send(true);
-    })
-    .catch((error) => {
-      console.log("Error fetching user data:", error);
-      res.send(false);
-    });}
-    catch(error){
-      res.send(false);
-    }
+  try {
+    await auth
+      .getUser(req.body.uid)
+      .then((userRecord) => {
+        console.log(`Successfully fetched user data: ${userRecord.toJSON()}`);
+        res.send(true);
+      })
+      .catch((error) => {
+        console.log("Error fetching user data:", error);
+        res.send(false);
+      });
+  } catch (error) {
+    console.log(error);
+    res.send(false);
+  }
 };

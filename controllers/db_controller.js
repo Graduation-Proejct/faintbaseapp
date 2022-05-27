@@ -53,6 +53,7 @@ exports.getDatabaseUser = async (req, res) => {
           : users[index]._medicalHistory,
       files:
         typeof users[index]._files === "undefined" ? [] : users[index]._files,
+      
     };
 
     res.send(my_user);
