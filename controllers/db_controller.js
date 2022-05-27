@@ -144,7 +144,7 @@ async function writeUserData(userId, user, password, res) {
   console.log(user);
 
   let _uid = await auth_controller.addUserToFbAuth(res, user._email, password);
-  console.log("value returned from auth " + val);
+  console.log("value returned from auth " + _uid);
   if (_uid=="") {
     console.log("not added");
   } else {
