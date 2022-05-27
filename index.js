@@ -18,7 +18,7 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.use("/", dbRoute);
+// app.use("/", dbRoute);
 app.get("/", (req, res) => {
   res.send("Server is running!");
 });
