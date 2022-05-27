@@ -24,6 +24,20 @@ exports.login = async (req, res) => {
 exports.addCareTaker = async (req, res) => {
   await addingCareTaker(req, res);
 };
+exports.is_auth = async (req, res) => {
+  let check = false;
+  const users = await getDatabaseUsers();
+  for (let i = 0; i < users.length; i++) {
+    if (users[i]._UID == req.body.UID) {
+      check = true;
+    }
+  }
+  if (check) {
+    res.send(true);
+  } else {
+    res.send(false);
+  }
+};
 exports.getDatabaseUser = async (req, res) => {
   const users = await getDatabaseUsers();
   let index = -1;
@@ -53,7 +67,6 @@ exports.getDatabaseUser = async (req, res) => {
           : users[index]._medicalHistory,
       files:
         typeof users[index]._files === "undefined" ? [] : users[index]._files,
-      
     };
 
     res.send(my_user);

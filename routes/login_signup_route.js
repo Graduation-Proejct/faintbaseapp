@@ -1,7 +1,6 @@
 const express = require("express");
 const dbController = require("../controllers/db_controller");
 const router = express.Router();
-const auth_controller = require("../controllers/auth_controller");
 
 //takes user's data and checks if it's valid. then if it's a caretaker type, it adds the user to the db. sends true if it's a valid and/or it's added.
 router.post("/signup", dbController.signup);
@@ -20,6 +19,6 @@ router.post("/add_caretaker", dbController.addCareTaker);
 
 router.post("/user_by_email", dbController.getUserForFD);
 
-router.post("/is_auth", auth_controller.isAuth);
+router.post("/is_auth", dbController.is_auth);
 
 module.exports = router;
