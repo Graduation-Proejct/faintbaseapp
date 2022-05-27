@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-// const dbRoute = require("./routes/login_signup_route.js");
+const dbRoute = require("./routes/login_signup_route.js");
 //const dbRoute = require("./routes/login_signup_route");
 
 const app = express();
@@ -18,9 +18,9 @@ app.use(function (req, res, next) {
   next();
 });
 
-// app.use("/", dbRoute);
+app.use("/", dbRoute);
 app.get("/", (req, res) => {
-  res.send("Server is running!");
+  res.send("server is running");
 });
 app.listen(8080, function () {
   console.log("Server running");
