@@ -11,6 +11,12 @@ exports.signup = async (req, res) => {
     await patientSignupValidate(req, res);
   }
 };
+
+exports.signupNext = async (req, res) => {
+  console.log(req.body);
+
+  await userSignup(req, res);
+};
 exports.getUserForFD = async (req, res) => {
   const users = await getDatabaseUsers();
   let user = searchDatabaseByEmail(users, req.body.email);
@@ -19,7 +25,7 @@ exports.getUserForFD = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
- let val= await auth_controller.login(req, res);
+  let val = await auth_controller.login(req, res);
 };
 exports.addCareTaker = async (req, res) => {
   await addingCareTaker(req, res);
@@ -145,11 +151,11 @@ async function writeUserData(userId, user, password, res) {
 
   let _uid = await auth_controller.addUserToFbAuth(res, user._email, password);
   console.log("value returned from auth " + _uid);
-  if (_uid=="") {
+  if (_uid == "") {
     console.log("not added");
   } else {
     try {
-      user._UID=_uid;
+      user._UID = _uid;
       await set(ref(db, "users/" + userId), user);
       console.log("added");
     } catch (error) {

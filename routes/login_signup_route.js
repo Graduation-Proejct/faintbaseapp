@@ -9,7 +9,7 @@ router.post("/signup", dbController.signup);
 router.post("/user_data", dbController.getDatabaseUser);
 
 // takes the user's data of type patient and adds it
-//  router.post('/signup_patient_user',dbController.signupNext);
+ router.post('/signup_patient_user',dbController.signupNext);
 
 //takes the login credentials and checks if it's true and then login and sends true
 router.post("/login", dbController.login);
