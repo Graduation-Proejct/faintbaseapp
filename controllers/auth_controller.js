@@ -39,6 +39,7 @@ exports.login = async (req, res) => {
 };
 exports.isAuth = async (req, res) => {
   try {
+    let check = false;
     const user = auth.currentUser;
     if (user !== null) {
       user.providerData.forEach((profile) => {
@@ -47,8 +48,16 @@ exports.isAuth = async (req, res) => {
         console.log("  Name: " + profile.displayName);
         console.log("  Email: " + profile.email);
         console.log("  Photo URL: " + profile.photoURL);
+        if (profile.uid == req.body.uid) {
+          res.send(true);
+          check = true;
+          console.log("true");
+        }
       });
-      res.send(true);
+      if (!check) {
+        console.log("didn't find it");
+        res.send(false);
+      }
     } else {
       res.send(false);
     }
