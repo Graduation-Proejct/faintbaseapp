@@ -153,63 +153,76 @@ async function writeUserData(userId, user, password, res) {
 }
 
 async function addingCareTaker(req, res) {
-  // let users = await getDatabaseUsers();
-  // let my_user = searchDatabaseByEmail(users, req.body.email);
-  // console.log("my user is");
-  // console.log(my_user);
-  // if (my_user == false) {
-  //   console.log("sending false");
-  //   res.send(false);
-  // } else {
-  //   let _emailList =
-  //     typeof my_user._emailList === "undefined" ? [] : my_user._emailList;
-  //   console.log("my email list before adding");
-  //   console.log(_emailList);
-  //   console.log(req.body.list);
-  //   let check = 0;
-  //   for (let i = 0; i < _emailList.length; i++) {
-  //     for (let j = 0; j < req.body.list.length; j++) {
-  //       if (req.body.list[j].email == _emailList[i]) {
-  //         console.log("email is already in the list");
-  //         check = 1;
-  //         res.send(false);
-  //         break;
-  //       }
-  //     }
-  //     if ((check = 1)) break;
-  //   }
-  //   if (check == 0) {
-  //     for (let i = _emailList.length; i < req.body.list.length; i++) {
-  //       let my_careTaker = searchDatabaseByUser(users, req.body.list[i]);
-  //       console.log(my_careTaker);
-  //       _emailList[i] = my_careTaker._email;
-  //     }
-  //     let my_user_toUpdate = new UserDb(
-  //       my_user._name,
-  //       my_user._email,
-  //       my_user._phone,
-  //       my_user._type,
-  //       _emailList,
-  //       typeof my_user._questions === "undefined" ? [] : my_user._questions,
-  //       typeof my_user._medicalHistory === "undefined"
-  //         ? ""
-  //         : my_user._medicalHistory,
-  //       typeof my_user._files === "undefined" ? [] : my_user._files
-  //     );
-  //     console.log("user's caretaker list is:\n" + my_user._list);
-  //     console.log(my_user_toUpdate);
-  //     let userId = getUserId(users, my_user_toUpdate);
-  //     console.log(userId);
-  //     await editUserData(userId, my_user_toUpdate, res);
-  //   }
-  // }
+  let users = await getDatabaseUsers();
+  let my_user = searchDatabaseByUID(users, req.body.UID);
+  console.log("my user is");
+  console.log(my_user);
+  if (my_user == false) {
+    console.log("sending false");
+    res.send(false);
+  } else {
+    let _emailList =
+      typeof my_user._emailList === "undefined" ? [] : my_user._emailList;
+    console.log("my email list before adding");
+    console.log(_emailList);
+    let check = 0;
+    for (let i = 0; i < _emailList.length; i++) {
+      if (req.body.emailCaretaker == _emailList[i]) {
+        check = 1;
+        res.send(true);
+        break;
+      }
+    }
+    if (check == 0) {
+      let my_careTaker = searchDatabaseByEmail(users, req.body.emailCaretaker);
+      console.log(my_careTaker);
+      _emailList[_emailList.length] = my_careTaker._email;
+
+      let my_user_toUpdate = {
+        _UID: req.body.UID,
+        _name: my_user._name,
+        _email: my_user._email,
+        _phone: my_user._phone,
+        _type: my_user._type,
+        _emailList: _emailList,
+        _questions:
+          typeof my_user._questions === "undefined" ? [] : my_user._questions,
+        _medicalHistory:
+          typeof my_user._medicalHistory === "undefined"
+            ? ""
+            : my_user._medicalHistory,
+        _files: typeof my_user._files === "undefined" ? [] : my_user._files,
+      };
+      let my_user_toSend = {
+        UID: req.body.UID,
+        name: my_user._name,
+        email: my_user._email,
+        phone: my_user._phone,
+        type: my_user._type,
+        emailList: _emailList,
+        questions:
+          typeof my_user._questions === "undefined" ? [] : my_user._questions,
+        medicalHistory:
+          typeof my_user._medicalHistory === "undefined"
+            ? ""
+            : my_user._medicalHistory,
+        files: typeof my_user._files === "undefined" ? [] : my_user._files,
+      };
+
+      console.log("user's caretaker list is:\n" + my_user_toUpdate._list);
+      console.log(my_user_toUpdate);
+      let userId = getUserId(users, my_user_toUpdate);
+      console.log(userId);
+      await editUserData(userId, my_user_toUpdate, my_user_toSend, res);
+    }
+  }
 }
 
-async function editUserData(userId, my_user, res) {
+async function editUserData(userId, my_user_toUpdate, my_user_toSend, res) {
   try {
-    await update(ref(db, "users/" + userId), my_user);
+    await update(ref(db, "users/" + userId), my_user_toUpdate);
     console.log("updated");
-    res.send(true);
+    res.send(my_user_toSend);
   } catch (error) {
     console.log(error);
     console.log("not updated");
@@ -228,7 +241,7 @@ function getUserId(users, user) {
 }
 function searchDatabaseByEmail(users, email) {
   for (let i = 0; i < users.length; i++) {
-    if (users[i]._email == email) {
+    if (users[i]._email == email ) {
       return users[i];
     }
   }
