@@ -169,7 +169,7 @@ async function addingCareTaker(req, res) {
     for (let i = 0; i < _emailList.length; i++) {
       if (req.body.emailCaretaker == _emailList[i]) {
         check = 1;
-        res.send(true);
+        res.send(false);
         break;
       }
     }
