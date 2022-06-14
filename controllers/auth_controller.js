@@ -24,19 +24,21 @@ exports.addUserToFbAuth = async (res, email, password) => {
   return true;
 };
 exports.login = async (req, res) => {
+  let UID = "";
   await signInWithEmailAndPassword(auth, req.body.email, req.body.password)
     .then((userCredential) => {
       const user = userCredential.user;
       console.log("user logged in and it's id is:\n" + user.uid);
-      return user.uid;
+      UID = user.uid;
     })
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
       console.log("error");
       console.log(error);
-      return "error";
+      UID = "error";
     });
+  return UID;
 };
 // exports.isAuth = async (req, res) => {
 //   try {
