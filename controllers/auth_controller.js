@@ -11,7 +11,7 @@ exports.addUserToFbAuth = async (res, email, password) => {
       const userCred = userCredential.user;
       console.log("user signed up and it's uid is:\n" + userCred.uid);
       res.send({ UID: userCred.uid });
-      return userCred.uid ;
+      return userCred.uid;
     })
     .catch((error) => {
       const errorCode = error.code;
@@ -28,14 +28,14 @@ exports.login = async (req, res) => {
     .then((userCredential) => {
       const user = userCredential.user;
       console.log("user logged in and it's id is:\n" + user.uid);
-      return  user.uid 
+      return user.uid;
     })
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
+      console.log("error");
       console.log(error);
-      return "error" ;
-    
+      return "error";
     });
 };
 // exports.isAuth = async (req, res) => {
