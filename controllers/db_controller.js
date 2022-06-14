@@ -26,7 +26,7 @@ exports.getUserForFD = async (req, res) => {
 
 exports.login = async (req, res) => {
   let val = await auth_controller.login(req, res);
-
+    console.log("uid is "+val);
   if (val !== "error") {
     let dbUsers = await getDatabaseUsers();
     let user_data = searchDatabaseByUID(dbUsers, val);
