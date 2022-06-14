@@ -26,7 +26,7 @@ exports.getUserForFD = async (req, res) => {
 
 exports.login = async (req, res) => {
   let val = await auth_controller.login(req, res);
-  
+
   if (val !== "error") {
     let dbUsers = getDatabaseUsers();
     let user_data = searchDatabaseByUID(dbUsers, val);
@@ -130,7 +130,7 @@ async function userSignup(req, res) {
 }
 async function getDatabaseUsers() {
   let my_users = [];
-  await get(child(dbRef, `users`))
+   await get(child(dbRef, `users`))
     .then(async (snapshot) => {
       if (snapshot.exists()) {
         console.log("database accessed");
