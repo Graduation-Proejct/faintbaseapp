@@ -26,6 +26,19 @@ exports.getUserForFD = async (req, res) => {
 
 exports.login = async (req, res) => {
   let val = await auth_controller.login(req, res);
+  if (val !== "error") {
+    let dbUsers = getDatabaseUsers();
+    let user_data = searchDatabaseByUID(dbUsers, val);
+    let myUsers = [];
+    for (let i = 0; i < user_data._emailList.length; i++) {
+      myUsers[i] = searchDatabaseByEmail(dbUsers, user_data._emailList[i]);
+    }
+    let user = editUser(user_data, myUsers);
+    res.send(user);
+  } else {
+    uid = { UID: val };
+    res.send(uid);
+  }
 };
 exports.addCareTaker = async (req, res) => {
   await addingCareTaker(req, res);
@@ -111,7 +124,7 @@ async function userSignup(req, res) {
     await writeUserData(users.length, my_user, req.body.password, res);
   } else {
     console.log("user is found in database");
-    res.send({UID:"error"});
+    res.send({ UID: "error" });
   }
 }
 async function getDatabaseUsers() {
@@ -256,8 +269,32 @@ function searchDatabaseByUser(users, user) {
   }
   return NaN;
 }
+function searchDatabaseByUID(users, UID) {
+  for (let i = 0; i < users.length; i++) {
+    if (users[i]._UID == UID) {
+      return users[i];
+    }
+  }
+  return false;
+}
+function editUser(user, my_list) {
+  const my_user = {
+    UID: user._UID,
+    name: user._name,
+    email: user._email,
+    phone: user._phone,
+    type: user._type,
+    questions: typeof user._questions === "undefined" ? [] : user._questions,
+    medicalHistory:
+      typeof user._medicalHistory === "undefined" ? "" : user._medicalHistory,
+    files: typeof user._files === "undefined" ? [] : user._files,
+    list: my_list,
+  };
+  return my_user;
+}
 function editUser(user) {
   const my_user = {
+    UID: user._UID,
     name: user._name,
     email: user._email,
     phone: user._phone,

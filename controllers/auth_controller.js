@@ -28,15 +28,14 @@ exports.login = async (req, res) => {
     .then((userCredential) => {
       const user = userCredential.user;
       console.log("user logged in and it's id is:\n" + user.uid);
-      res.send({ UID: user.uid });
-      return true;
+      return  user.uid 
     })
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
       console.log(error);
-      res.send({ UID: "error" });
-      return false;
+      return "error" ;
+    
     });
 };
 // exports.isAuth = async (req, res) => {
