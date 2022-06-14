@@ -31,12 +31,21 @@ exports.login = async (req, res) => {
     let dbUsers = getDatabaseUsers();
     let user_data = searchDatabaseByUID(dbUsers, val);
     console.log(user_data);
-    let myUsers = [];
-    for (let i = 0; i < user_data._emailList.length; i++) {
-      myUsers[i] = searchDatabaseByEmail(dbUsers, user_data._emailList[i]);
+    if (user_data != false) {
+      let myUsers = [];
+      for (let i = 0; i < user_data._emailList.length; i++) {
+        myUsers[i] = searchDatabaseByEmail(dbUsers, user_data._emailList[i]);
+      }
+      let user = editUser(user_data, myUsers);
+      res.send(user);
     }
-    let user = editUser(user_data, myUsers);
-    res.send(user);
+    else{
+      console.log("user is false, didn't find uid");
+      error = { UID: "error" };
+
+      res.send(error);
+
+    }
   } else {
     uid = { UID: val };
     res.send(uid);
@@ -131,7 +140,7 @@ async function userSignup(req, res) {
 }
 async function getDatabaseUsers() {
   let my_users = [];
-   await get(child(dbRef, `users`))
+  await get(child(dbRef, `users`))
     .then(async (snapshot) => {
       if (snapshot.exists()) {
         console.log("database accessed");
@@ -272,6 +281,7 @@ function searchDatabaseByUser(users, user) {
   return NaN;
 }
 function searchDatabaseByUID(users, UID) {
+  console.log(UID);
   for (let i = 0; i < users.length; i++) {
     if (users[i]._UID == UID) {
       return users[i];
