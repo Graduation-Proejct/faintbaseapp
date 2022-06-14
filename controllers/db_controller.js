@@ -200,7 +200,7 @@ async function deleteCareTaker(req, res) {
       console.log(my_user_toUpdate);
       let userId = getUserId(users, my_user_toUpdate);
       console.log(userId);
-      await editUserData(userId, my_user_toUpdate, res);
+      await editUserData2(userId, my_user_toUpdate, res);
     }
     else {
       res.send(false);
@@ -284,7 +284,7 @@ async function editUserData(userId, my_user_toUpdate, my_user_toSend, res) {
     res.send(false);
   }
 }
-async function editUserData(userId, my_user_toUpdate, res) {
+async function editUserData2(userId, my_user_toUpdate, res) {
   try {
     await update(ref(db, "users/" + userId), my_user_toUpdate);
     console.log("updated");
