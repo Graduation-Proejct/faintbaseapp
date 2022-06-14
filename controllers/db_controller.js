@@ -89,7 +89,13 @@ async function userSignup(req, res) {
         : req.body.medicalHistory,
       typeof req.body.files === "undefined" ? [] : req.body.files
     );
-    await writeUserData(users.length, my_user, req.body.password, res);
+    let uid = await writeUserData(
+      users.length,
+      my_user,
+      req.body.password,
+      res
+    );
+    res.send({ UID: uid });
   } else {
     console.log("user is found in database");
     res.send({ UID: "error" });
@@ -132,7 +138,7 @@ async function writeUserData(userId, user, password, res) {
 
   let _uid = await auth_controller.addUserToFbAuth(res, user._email, password);
   console.log("value returned from auth " + _uid);
-  if (_uid == "") {
+  if (_uid == "error") {
     console.log("not added");
   } else {
     try {
@@ -143,6 +149,7 @@ async function writeUserData(userId, user, password, res) {
       console.log(error);
     }
   }
+  return _uid;
 }
 
 async function addingCareTaker(req, res) {
