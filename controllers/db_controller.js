@@ -30,6 +30,7 @@ exports.login = async (req, res) => {
   if (val !== "error") {
     let dbUsers = getDatabaseUsers();
     let user_data = searchDatabaseByUID(dbUsers, val);
+    console.log(user_data);
     let myUsers = [];
     for (let i = 0; i < user_data._emailList.length; i++) {
       myUsers[i] = searchDatabaseByEmail(dbUsers, user_data._emailList[i]);
