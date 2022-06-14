@@ -28,8 +28,10 @@ exports.login = async (req, res) => {
     if (user_data != false) {
       let myUsers = [];
       console.log(user_data._emailList);
-      for (let i = 0; i < user_data._emailList.length; i++) {
-        myUsers[i] = searchDatabaseByEmail(dbUsers, user_data._emailList[i]);
+      if (user_data._emailList != undefined) {
+        for (let i = 0; i < user_data._emailList.length; i++) {
+          myUsers[i] = searchDatabaseByEmail(dbUsers, user_data._emailList[i]);
+        }
       }
       console.log(myUsers);
       let user = editUser(user_data, myUsers);
@@ -168,7 +170,7 @@ async function deleteCareTaker(req, res) {
     console.log("my email list before adding");
     console.log(_emailList);
     let index = -1;
-    
+
     for (let i = 0; i < _emailList.length; i++) {
       if (req.body.emailCaretaker == _emailList[i]) {
         index = i;
@@ -201,8 +203,7 @@ async function deleteCareTaker(req, res) {
       let userId = getUserId(users, my_user_toUpdate);
       console.log(userId);
       await editUserData2(userId, my_user_toUpdate, res);
-    }
-    else {
+    } else {
       res.send(false);
     }
   }
@@ -288,7 +289,7 @@ async function editUserData2(userId, my_user_toUpdate, res) {
   try {
     await update(ref(db, "users/" + userId), my_user_toUpdate);
     console.log("updated");
-     res.send(true);
+    res.send(true);
   } catch (error) {
     console.log(error);
     console.log("not updated");
