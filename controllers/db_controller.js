@@ -48,6 +48,9 @@ exports.login = async (req, res) => {
 exports.addCareTaker = async (req, res) => {
   await addingCareTaker(req, res);
 };
+exports.deleteCareTaker = async (req, res) => {
+  await deleteCareTaker(req, res);
+};
 exports.is_auth = async (req, res) => {
   let check = false;
   const users = await getDatabaseUsers();
@@ -151,7 +154,55 @@ async function writeUserData(userId, user, password, res) {
   }
   return _uid;
 }
+async function deleteCareTaker(req, res) {
+  let users = await getDatabaseUsers();
+  let my_user = searchDatabaseByUID(users, req.body.UID);
+  console.log("my user is");
+  console.log(my_user);
+  if (my_user == false) {
+    console.log("sending false");
+    res.send(false);
+  } else {
+    let _emailList =
+      typeof my_user._emailList === "undefined" ? [] : my_user._emailList;
+    console.log("my email list before adding");
+    console.log(_emailList);
+    let index = -1;
+    for (let i = 0; i < _emailList.length; i++) {
+      if (req.body.emailCaretaker == _emailList[i]) {
+        index = i;
+        break;
+      }
+    }
+    if (index > -1) {
+      let my_careTaker = searchDatabaseByEmail(users, req.body.emailCaretaker);
+      console.log(my_careTaker);
+      _emailList.splice(index, 1);
 
+      let my_user_toUpdate = {
+        _UID: req.body.UID,
+        _name: my_user._name,
+        _email: my_user._email,
+        _phone: my_user._phone,
+        _type: my_user._type,
+        _emailList: _emailList,
+        _questions:
+          typeof my_user._questions === "undefined" ? [] : my_user._questions,
+        _medicalHistory:
+          typeof my_user._medicalHistory === "undefined"
+            ? ""
+            : my_user._medicalHistory,
+        _files: typeof my_user._files === "undefined" ? [] : my_user._files,
+      };
+
+      console.log("user's caretaker list is:\n" + my_user_toUpdate._list);
+      console.log(my_user_toUpdate);
+      let userId = getUserId(users, my_user_toUpdate);
+      console.log(userId);
+      await editUserData(userId, my_user_toUpdate, res);
+    }
+  }
+}
 async function addingCareTaker(req, res) {
   let users = await getDatabaseUsers();
   let my_user = searchDatabaseByUID(users, req.body.UID);
@@ -229,6 +280,17 @@ async function editUserData(userId, my_user_toUpdate, my_user_toSend, res) {
     res.send(false);
   }
 }
+async function editUserData(userId, my_user_toUpdate, res) {
+  try {
+    await update(ref(db, "users/" + userId), my_user_toUpdate);
+    console.log("updated");
+    res.send(true);
+  } catch (error) {
+    console.log(error);
+    console.log("not updated");
+    res.send(false);
+  }
+}
 function getUserId(users, user) {
   let index = -1;
   for (let i = 0; i < users.length; i++) {
@@ -241,7 +303,7 @@ function getUserId(users, user) {
 }
 function searchDatabaseByEmail(users, email) {
   for (let i = 0; i < users.length; i++) {
-    if (users[i]._email == email ) {
+    if (users[i]._email == email) {
       return users[i];
     }
   }

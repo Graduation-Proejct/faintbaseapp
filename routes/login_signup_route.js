@@ -15,6 +15,7 @@ router.post("/login", dbController.login);
 //takes the user's data of type patient and modifies it in the database (adding a caretaker related to this patient) and sends true if it's added.
 router.post("/add_caretaker", dbController.addCareTaker);
 
+router.post("/delete_caretaker", dbController.deleteCareTaker);
 
 
 router.post("/is_auth", dbController.is_auth);
