@@ -168,6 +168,7 @@ async function deleteCareTaker(req, res) {
     console.log("my email list before adding");
     console.log(_emailList);
     let index = -1;
+    
     for (let i = 0; i < _emailList.length; i++) {
       if (req.body.emailCaretaker == _emailList[i]) {
         index = i;
@@ -200,6 +201,9 @@ async function deleteCareTaker(req, res) {
       let userId = getUserId(users, my_user_toUpdate);
       console.log(userId);
       await editUserData(userId, my_user_toUpdate, res);
+    }
+    else {
+      res.send(false);
     }
   }
 }
