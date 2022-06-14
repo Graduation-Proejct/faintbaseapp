@@ -283,6 +283,7 @@ function searchDatabaseByUser(users, user) {
 function searchDatabaseByUID(users, UID) {
   console.log(UID);
   for (let i = 0; i < users.length; i++) {
+    console.log("user number "+i+" it uid is "+$users[i]._UID +" while my uid is "+UID );
     if (users[i]._UID == UID) {
       return users[i];
     }
