@@ -288,7 +288,7 @@ async function editUserData(userId, my_user_toUpdate, res) {
   try {
     await update(ref(db, "users/" + userId), my_user_toUpdate);
     console.log("updated");
-    res.send(true);
+     res.send(true);
   } catch (error) {
     console.log(error);
     console.log("not updated");
