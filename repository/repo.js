@@ -177,7 +177,7 @@ async function addingCareTaker(req, res) {
       my_user.emailList = _emailList;
       let my_user_toSend = editUser(my_careTaker);
       let my_user_toUpdate = createUserForDB(my_user);
-      console.log("user's caretaker list is:\n" + my_user_toUpdate._list);
+      console.log("user's caretaker list is:\n" + my_user_toUpdate._emailList);
       console.log(my_user_toUpdate);
       let userId = getUserId(users, my_user_toUpdate);
       console.log(userId);
@@ -273,4 +273,17 @@ function editUser(user) {
   return my_user;
 }
 
-function createUserForDB(user) {}
+function createUserForDB(user) {
+  let my_user = new UserDb(
+    user.name,
+    user.email,
+    user.phone,
+    user.type,
+    typeof user.emailList === "undefined" ? [] : user.emailList,
+    typeof user.questions === "undefined" ? [] : user.questions,
+    typeof user.medicalHistory === "undefined" ? "" : user.medicalHistory,
+    typeof user.files === "undefined" ? [] : user.files,
+    user.UID
+  );
+  return my_user;
+}
