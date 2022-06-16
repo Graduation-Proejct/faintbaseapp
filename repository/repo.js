@@ -190,7 +190,13 @@ async function addingCareTaker(req, res) {
       let patient_user = editUser(my_user);
       for (let i = 0; i < _emailList.length; i++) {
         let caretaker = searchDatabaseByEmail(users, _emailList[i]);
-        caretaker._emailList[caretaker._emailList.length] = patient_user;
+        let _emailList =
+          typeof caretaker._emailList === "undefined"
+            ? []
+            : caretaker._emailList;
+        _emailList[_emailList._emailList.length] = patient_user.email;
+        caretaker._emailList = _emailList;
+
         let Id = getUserId(users, caretaker);
         await dbController.editCareTakerData(Id, caretaker);
       }
