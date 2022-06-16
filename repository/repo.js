@@ -188,8 +188,8 @@ async function addingCareTaker(req, res) {
         res
       );
       let patient_user = editUser(my_user);
-      for (let i = 0; i < _emailList.length; i++) {
-        let caretaker = searchDatabaseByEmail(users, _emailList[i]);
+      for (let i = 0; i <  my_user.emailList.length; i++) {
+        let caretaker = searchDatabaseByEmail(users,  my_user.emailList[i]);
         let _emailList =
           typeof caretaker._emailList === "undefined"
             ? []
