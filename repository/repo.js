@@ -21,13 +21,44 @@ exports.signupNext = async (req, res) => {
 
 exports.login = async (req, res) => {
   let val = await auth_controller.login(req, res);
+  console.log("uid is " + val);
+  if (val !== "error") {
+    let dbUsers = await dbController.getDatabaseUsers();
+    let user_data = searchDatabaseByUID(dbUsers, val);
+    console.log(user_data);
+    if (user_data != false) {
+      let myUsers = [];
+      console.log(user_data._emailList);
+      if (user_data._emailList != undefined) {
+        for (let i = 0; i < user_data._emailList.length; i++) {
+          myUsers[i] = searchDatabaseByEmail(dbUsers, user_data._emailList[i]);
+        }
+      }
+      console.log(myUsers);
+      user_data.list = myUsers;
+      let user = editUser(user_data);
+      console.log(user);
+      res.send(user);
+    } else {
+      console.log("user is false, didn't find uid");
+      error = { UID: "error" };
+
+      res.send(error);
+    }
+  } else {
+    uid = { UID: val };
+    res.send(uid);
+  }
 };
 exports.addCareTaker = async (req, res) => {
   await addingCareTaker(req, res);
 };
+exports.deleteCareTaker = async (req, res) => {
+  await deleteCareTaker(req, res);
+};
 exports.is_auth = async (req, res) => {
   let check = false;
-  const users = await getDatabaseUsers();
+  const users = await dbController.getDatabaseUsers();
   for (let i = 0; i < users.length; i++) {
     if (users[i]._UID == req.body.UID) {
       check = true;
@@ -39,3 +70,207 @@ exports.is_auth = async (req, res) => {
     res.send(false);
   }
 };
+
+async function patientSignupValidate(req, res) {
+  const users = await dbController.getDatabaseUsers();
+  const val = isUserInDb(users, req.body.email);
+  if (!val) {
+    res.send(true);
+  } else {
+    res.send(false);
+  }
+}
+async function userSignup(req, res) {
+  const users = await dbController.getDatabaseUsers();
+  let val = isUserInDb(users, req.body.email);
+  console.log("is user in db? " + val);
+  if (!val) {
+    let my_user = new UserDb(
+      req.body.name,
+      req.body.email,
+      req.body.phone,
+      req.body.type,
+      typeof req.body.emailList === "undefined" ? [] : req.body.emailList,
+      typeof req.body.questions === "undefined" ? [] : req.body.questions,
+      typeof req.body.medicalHistory === "undefined"
+        ? ""
+        : req.body.medicalHistory,
+      typeof req.body.files === "undefined" ? [] : req.body.files
+    );
+    let uid = await dbController.writeUserData(
+      users.length,
+      my_user,
+      req.body.password,
+      res
+    );
+    res.send({ UID: uid });
+  } else {
+    console.log("user is found in database");
+    res.send({ UID: "error" });
+  }
+}
+
+async function deleteCareTaker(req, res) {
+  let users = await dbController.getDatabaseUsers();
+  let my_user = searchDatabaseByUID(users, req.body.UID);
+  console.log("my user is");
+  console.log(my_user);
+  if (my_user == false) {
+    console.log("sending false");
+    res.send(false);
+  } else {
+    let _emailList =
+      typeof my_user._emailList === "undefined" ? [] : my_user._emailList;
+    console.log("my email list before adding");
+    console.log(_emailList);
+    let index = -1;
+
+    for (let i = 0; i < _emailList.length; i++) {
+      if (req.body.emailCaretaker == _emailList[i]) {
+        index = i;
+        break;
+      }
+    }
+    if (index > -1) {
+      let my_careTaker = searchDatabaseByEmail(users, req.body.emailCaretaker);
+      console.log(my_careTaker);
+      _emailList.splice(index, 1);
+
+      my_user.emailList = _emailList;
+      let my_user_toUpdate = createUserForDB(my_user);
+      console.log("user's caretaker list is:\n" + my_user_toUpdate._list);
+      console.log(my_user_toUpdate);
+      let userId = getUserId(users, my_user_toUpdate);
+      console.log(userId);
+      await dbController.editUserData(userId, my_user_toUpdate, res);
+    } else {
+      res.send(false);
+    }
+  }
+}
+async function addingCareTaker(req, res) {
+  let users = await dbController.getDatabaseUsers();
+  let my_user = searchDatabaseByUID(users, req.body.UID);
+  console.log("my user is");
+  console.log(my_user);
+  if (my_user == false) {
+    console.log("sending false");
+    res.send(false);
+  } else {
+    let _emailList =
+      typeof my_user._emailList === "undefined" ? [] : my_user._emailList;
+    console.log("my email list before adding");
+    console.log(_emailList);
+    let check = 0;
+    for (let i = 0; i < _emailList.length; i++) {
+      if (req.body.emailCaretaker == _emailList[i]) {
+        check = 1;
+        res.send(false);
+        break;
+      }
+    }
+    if (check == 0) {
+      let my_careTaker = searchDatabaseByEmail(users, req.body.emailCaretaker);
+      console.log(my_careTaker);
+      _emailList[_emailList.length] = my_careTaker._email;
+      my_user.UID = req.body.UID;
+      my_user.emailList = _emailList;
+      let my_user_toSend = editUser(my_careTaker);
+      let my_user_toUpdate = createUserForDB(my_user);
+      console.log("user's caretaker list is:\n" + my_user_toUpdate._list);
+      console.log(my_user_toUpdate);
+      let userId = getUserId(users, my_user_toUpdate);
+      console.log(userId);
+      await dbController.editUserDataWithSending(
+        userId,
+        my_user_toUpdate,
+        my_user_toSend,
+        res
+      );
+      let patient_user = editUser(my_user);
+      for (let i = 0; i < _emailList.length; i++) {
+        let caretaker = searchDatabaseByEmail(users, _emailList[i]);
+        caretaker._emailList[caretaker._emailList.length] = patient_user;
+        let Id = getUserId(users, caretaker);
+        await dbController.editCareTakerData(Id, caretaker);
+      }
+    }
+  }
+}
+
+function isUserInDb(users, email) {
+  let flag = 0;
+
+  for (let i = 0; i < users.length; i++) {
+    if (users[i]._email === email) flag = 1;
+  }
+  if (flag == 1) {
+    console.log("true");
+
+    return true;
+  } else {
+    console.log("false");
+    return false;
+  }
+}
+function getUserId(users, user) {
+  let index = -1;
+  for (let i = 0; i < users.length; i++) {
+    if (users[i]._email == user._email) {
+      index = i;
+      break;
+    }
+  }
+  return index;
+}
+function searchDatabaseByEmail(users, email) {
+  for (let i = 0; i < users.length; i++) {
+    if (users[i]._email == email) {
+      return users[i];
+    }
+  }
+  return false;
+}
+function searchDatabaseByUser(users, user) {
+  for (let i = 0; i < users.length; i++) {
+    if (users[i]._email == user.email || users[i]._email == user._email) {
+      return users[i];
+    }
+  }
+  return NaN;
+}
+function searchDatabaseByUID(users, UID) {
+  console.log(UID);
+  for (let i = 0; i < users.length; i++) {
+    console.log(
+      "user number " +
+        i +
+        " it uid is " +
+        users[i]._UID +
+        " while my uid is " +
+        UID
+    );
+    if (users[i]._UID == UID) {
+      return users[i];
+    }
+  }
+  return false;
+}
+
+function editUser(user) {
+  const my_user = {
+    UID: user._UID,
+    name: user._name,
+    email: user._email,
+    phone: user._phone,
+    type: user._type,
+    list: typeof user.list === "undefined" ? [] : user.list,
+    questions: typeof user._questions === "undefined" ? [] : user._questions,
+    medicalHistory:
+      typeof user._medicalHistory === "undefined" ? "" : user._medicalHistory,
+    files: typeof user._files === "undefined" ? [] : user._files,
+  };
+  return my_user;
+}
+
+function createUserForDB(user) {}
