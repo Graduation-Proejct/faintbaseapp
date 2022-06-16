@@ -275,10 +275,10 @@ function editUser(user) {
 
 function createUserForDB(user) {
   let my_user = new UserDb(
-    user.name,
-    user.email,
-    user.phone,
-    user.type,
+    typeof user.name === "undefined" ? user._name : user.name,
+    typeof user.email === "undefined" ? user._email : user.email,
+    typeof user.phone === "undefined" ? user._phone : user.phone,
+    typeof user.type === "undefined" ? user._type : user.type,
     typeof user.emailList === "undefined" ? [] : user.emailList,
     typeof user.questions === "undefined" ? [] : user.questions,
     typeof user.medicalHistory === "undefined" ? "" : user.medicalHistory,
