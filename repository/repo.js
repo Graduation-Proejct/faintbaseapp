@@ -137,6 +137,7 @@ async function deleteCareTaker(req, res) {
       _emailList.splice(index, 1);
 
       my_user.emailList = _emailList;
+      my_user.UID = req.body.UID;
       let my_user_toUpdate = createUserForDB(my_user);
       console.log("user's caretaker list is:\n" + my_user_toUpdate._list);
       console.log(my_user_toUpdate);
@@ -212,7 +213,16 @@ async function addingCareTaker(req, res) {
           typeof caretaker._emailList === "undefined"
             ? []
             : caretaker._emailList;
-        my_emailList[my_emailList.length] = patient_user.email;
+        let check = false;
+        for (let j = 0; j < my_emailList.length; j++) {
+          if (my_emailList[j] == patient_user.email) {
+            check = true;
+            break;
+          }
+        }
+        if (!check) {
+          my_emailList[my_emailList.length] = patient_user.email;
+        }
         caretaker._emailList = my_emailList;
 
         let Id = getUserId(users, caretaker);
