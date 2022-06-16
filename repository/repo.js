@@ -142,6 +142,29 @@ async function deleteCareTaker(req, res) {
       console.log(my_user_toUpdate);
       let userId = getUserId(users, my_user_toUpdate);
       console.log(userId);
+
+      let patient_user = editUser(my_user);
+      for (let i = 0; i < my_user.emailList.length; i++) {
+        let caretaker = searchDatabaseByEmail(users, my_user.emailList[i]);
+        let my_emailList =
+          typeof caretaker._emailList === "undefined"
+            ? []
+            : caretaker._emailList;
+        let mindex = -1;
+        for (let j = 0; j < my_emailList.length; j++) {
+          if (my_emailList[j] == patient_user.email) {
+            mindex = j;
+            break;
+          }
+        }
+        if (mindex > -1) {
+          my_emailList.splice(index, 1);
+        }
+        caretaker._emailList = my_emailList;
+
+        let Id = getUserId(users, caretaker);
+        await dbController.editCareTakerData(Id, caretaker);
+      }
       await dbController.editUserData(userId, my_user_toUpdate, res);
     } else {
       res.send(false);
@@ -181,12 +204,7 @@ async function addingCareTaker(req, res) {
       console.log(my_user_toUpdate);
       let userId = getUserId(users, my_user_toUpdate);
       console.log(userId);
-      await dbController.editUserDataWithSending(
-        userId,
-        my_user_toUpdate,
-        my_user_toSend,
-        res
-      );
+
       let patient_user = editUser(my_user);
       for (let i = 0; i < my_user.emailList.length; i++) {
         let caretaker = searchDatabaseByEmail(users, my_user.emailList[i]);
@@ -200,6 +218,12 @@ async function addingCareTaker(req, res) {
         let Id = getUserId(users, caretaker);
         await dbController.editCareTakerData(Id, caretaker);
       }
+      await dbController.editUserDataWithSending(
+        userId,
+        my_user_toUpdate,
+        my_user_toSend,
+        res
+      );
     }
   }
 }
