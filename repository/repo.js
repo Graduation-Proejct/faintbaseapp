@@ -70,7 +70,21 @@ exports.is_auth = async (req, res) => {
     res.send(false);
   }
 };
+exports.sos_patient = async (req, res) => {
+  let UID = req.body.UID;
+  let users = dbController.getDatabaseUsers();
+  let careTaker = searchDatabaseByUID(users, UID);
+  let emailList =
+    typeof careTaker._emailList === "undefined" ? [] : careTaker._emailList;
 
+  if (emailList.length > 0) {
+    let patient = searchDatabaseByEmail(users, emailList[0]);
+    let user = editUser(patient);
+    res.send(user);
+  } else {
+    res.send(false);
+  }
+};
 async function patientSignupValidate(req, res) {
   const users = await dbController.getDatabaseUsers();
   const val = isUserInDb(users, req.body.email);
