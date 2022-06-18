@@ -173,6 +173,7 @@ async function deleteCareTaker(req, res) {
           }
         }
         if (mindex > -1) {
+          console.log("found the patient and deleting it from caretaker list of patients")
           my_emailList.splice(index, 1);
 
           caretaker._emailList = my_emailList;
