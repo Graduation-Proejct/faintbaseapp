@@ -20,5 +20,5 @@ router.post("/delete_caretaker", repo.deleteCareTaker);
 
 router.post("/is_auth", repo.is_auth);
 
-router.post("/sos_patient",repo.sos);
+router.post("/sos_patient",repo.sos_patient);
 module.exports = router;
