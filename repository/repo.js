@@ -146,19 +146,8 @@ async function deleteCareTaker(req, res) {
       }
     }
     if (index > -1) {
-      let my_careTaker = searchDatabaseByEmail(users, req.body.emailCaretaker);
-      console.log(my_careTaker);
-      _emailList.splice(index, 1);
-
-      my_user.emailList = _emailList;
-      my_user.UID = req.body.UID;
-      let my_user_toUpdate = createUserForDB(my_user);
-      console.log("user's caretaker list is:\n" + my_user_toUpdate._list);
-      console.log(my_user_toUpdate);
-      let userId = getUserId(users, my_user_toUpdate);
-      console.log(userId);
-
       let patient_user = editUser(my_user);
+
       for (let i = 0; i < my_user.emailList.length; i++) {
         let caretaker = searchDatabaseByEmail(users, my_user.emailList[i]);
         let my_emailList =
@@ -166,11 +155,10 @@ async function deleteCareTaker(req, res) {
             ? []
             : caretaker._emailList;
         let mindex = -1;
-        let ID=-1;
+
         for (let j = 0; j < my_emailList.length; j++) {
           if (my_emailList[j] == patient_user.email) {
             mindex = j;
-            ID = getUserId(users, caretaker);
             break;
           }
         }
@@ -186,11 +174,25 @@ async function deleteCareTaker(req, res) {
           console.log(my_emailList);
           caretaker._emailList = my_emailList;
 
-          
+          let ID = getUserId(users, caretaker);
+
           console.log("id is " + ID);
           await dbController.editCareTakerData(ID, caretaker);
         }
       }
+
+      let my_careTaker = searchDatabaseByEmail(users, req.body.emailCaretaker);
+      console.log(my_careTaker);
+      _emailList.splice(index, 1);
+
+      my_user.emailList = _emailList;
+      my_user.UID = req.body.UID;
+      let my_user_toUpdate = createUserForDB(my_user);
+      console.log("user's caretaker list is:\n" + my_user_toUpdate._list);
+      console.log(my_user_toUpdate);
+      let userId = getUserId(users, my_user_toUpdate);
+      console.log(userId);
+
       await dbController.editUserData(userId, my_user_toUpdate, res);
     } else {
       res.send(false);
