@@ -174,11 +174,12 @@ async function deleteCareTaker(req, res) {
         }
         if (mindex > -1) {
           my_emailList.splice(index, 1);
-        }
-        caretaker._emailList = my_emailList;
 
-        let Id = getUserId(users, caretaker);
-        await dbController.editCareTakerData(Id, caretaker);
+          caretaker._emailList = my_emailList;
+
+          let Id = getUserId(users, caretaker);
+          await dbController.editCareTakerData(Id, caretaker);
+        }
       }
       await dbController.editUserData(userId, my_user_toUpdate, res);
     } else {
