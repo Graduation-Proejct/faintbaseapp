@@ -76,7 +76,7 @@ exports.sos_patient = async (req, res) => {
   let careTaker = searchDatabaseByUID(users, UID);
   let emailList =
     typeof careTaker._emailList === "undefined" ? [] : careTaker._emailList;
-
+  console.log(emailList);
   if (emailList.length > 0) {
     let patient = searchDatabaseByEmail(users, emailList[0]);
     let user = editUser(patient);
