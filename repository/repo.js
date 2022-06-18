@@ -188,7 +188,7 @@ async function deleteCareTaker(req, res) {
 
           
           console.log("id is " + ID);
-          await dbController.editCareTakerData(Id, caretaker);
+          await dbController.editCareTakerData(ID, caretaker);
         }
       }
       await dbController.editUserData(userId, my_user_toUpdate, res);
