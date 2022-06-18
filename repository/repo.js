@@ -72,7 +72,7 @@ exports.is_auth = async (req, res) => {
 };
 exports.sos_patient = async (req, res) => {
   let UID = req.body.UID;
-  let users = dbController.getDatabaseUsers();
+  let users = await dbController.getDatabaseUsers();
   let careTaker = searchDatabaseByUID(users, UID);
   let emailList =
     typeof careTaker._emailList === "undefined" ? [] : careTaker._emailList;
