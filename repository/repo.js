@@ -148,8 +148,9 @@ async function deleteCareTaker(req, res) {
     if (index > -1) {
       let patient_user = editUser(my_user);
       my_user.emailList = my_user._emailList;
+      _emailList.splice(index, 1);
       for (let i = 0; i < _emailList.length; i++) {
-        let caretaker = searchDatabaseByEmail(users,_emailList[i]);
+        let caretaker = searchDatabaseByEmail(users, _emailList[i]);
         let my_emailList =
           typeof caretaker._emailList === "undefined"
             ? []
@@ -180,10 +181,6 @@ async function deleteCareTaker(req, res) {
           await dbController.editCareTakerData(ID, caretaker);
         }
       }
-
-      let my_careTaker = searchDatabaseByEmail(users, req.body.emailCaretaker);
-      console.log(my_careTaker);
-      _emailList.splice(index, 1);
 
       my_user.emailList = _emailList;
       my_user.UID = req.body.UID;
