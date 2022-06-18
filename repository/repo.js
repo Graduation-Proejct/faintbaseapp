@@ -176,8 +176,12 @@ async function deleteCareTaker(req, res) {
           console.log(
             "found the patient and deleting it from caretaker list of patients"
           );
+          console.log("email list of caretaker patient before deleteing is");
+          console.log(my_emailList);
+          console.log("index to be deleted is " + mindex);
           my_emailList.splice(mindex, 1);
-
+          console.log("email list of caretaker patient after deleteing is");
+          console.log(my_emailList);
           caretaker._emailList = my_emailList;
 
           let Id = getUserId(users, caretaker);
