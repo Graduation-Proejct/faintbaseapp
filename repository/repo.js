@@ -179,6 +179,7 @@ async function deleteCareTaker(req, res) {
 
           console.log("id is " + ID);
           await dbController.editCareTakerData(ID, caretaker);
+          break;
         }
       }
       _emailList.splice(index, 1);
