@@ -166,9 +166,11 @@ async function deleteCareTaker(req, res) {
             ? []
             : caretaker._emailList;
         let mindex = -1;
+        let ID=-1;
         for (let j = 0; j < my_emailList.length; j++) {
           if (my_emailList[j] == patient_user.email) {
             mindex = j;
+            ID = getUserId(users, caretaker);
             break;
           }
         }
@@ -184,8 +186,8 @@ async function deleteCareTaker(req, res) {
           console.log(my_emailList);
           caretaker._emailList = my_emailList;
 
-          let Id = getUserId(users, caretaker);
-          console.log("id is " + Id);
+          
+          console.log("id is " + ID);
           await dbController.editCareTakerData(Id, caretaker);
         }
       }
