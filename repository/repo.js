@@ -50,10 +50,10 @@ exports.login = async (req, res) => {
             );
           }
         }
-        console.log(myUsers);
+        
         user_data.list = myUsers;
         let user = editUser(user_data);
-        console.log(user);
+        
         res.send(user);
       } else {
         console.log("user is false, didn't find uid");
