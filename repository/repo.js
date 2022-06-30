@@ -210,27 +210,28 @@ async function addingCareTaker(req, res) {
       typeof my_user._emailList === "undefined" ? [] : my_user._emailList;
     console.log("my email list before adding");
     console.log(_emailList);
-    let check = 0;
-    for (let i = 0; i < _emailList.length; i++) {
-      if (req.body.emailCaretaker == _emailList[i]) {
-        check = 1;
-        res.send(false);
-        break;
-      }
-    }
+    let check = checkEmailInEmailList(req.body.emailCaretaker, _emailList, res);
     if (check == 0) {
+      //editing emailList in patient user
       let my_careTaker = searchDatabaseByEmail(users, req.body.emailCaretaker);
       console.log(my_careTaker);
       _emailList[_emailList.length] = my_careTaker._email;
       my_user.UID = req.body.UID;
       my_user.emailList = _emailList;
+
+      //preparing objects to be sent
       let my_user_toSend = editUser(my_careTaker);
+
+      console.log("my user to update in database BEFORE editing");
+      console.log(my_user);
       let my_user_toUpdate = createUserForDB(my_user);
-      console.log("user's caretaker list is:\n" + my_user_toUpdate._emailList);
+      console.log("my user to update in database AFTER editing");
       console.log(my_user_toUpdate);
+
       let userId = getUserId(users, my_user_toUpdate);
       console.log(userId);
 
+      //editing caretaker's list
       let patient_user = editUser(my_user);
       for (let i = 0; i < my_user.emailList.length; i++) {
         let caretaker = searchDatabaseByEmail(users, my_user.emailList[i]);
@@ -337,16 +338,38 @@ function editUser(user) {
   };
   return my_user;
 }
-
+function checkEmailInEmailList(email, emailList, res) {
+  let check = 0;
+  for (let i = 0; i < emailList.length; i++) {
+    if (email == emailList[i]) {
+      check = 1;
+      res.send(false);
+      break;
+    }
+  }
+  return check;
+}
 function createUserForDB(user) {
   let my_user = new UserDb(
     typeof user.name === "undefined" ? user._name : user.name,
     typeof user.email === "undefined" ? user._email : user.email,
     typeof user.phone === "undefined" ? user._phone : user.phone,
     typeof user.type === "undefined" ? user._type : user.type,
-    typeof user.emailList === "undefined" ? [] : user.emailList,
-    typeof user.questions === "undefined" ? [] : user.questions,
-    typeof user.medicalHistory === "undefined" ? "" : user.medicalHistory,
+    typeof user.emailList === "undefined"
+      ? typeof user._emailList === "undefined"
+        ? []
+        : user._emailList
+      : user.emailList,
+    typeof user.questions === "undefined"
+      ? typeof user._questions === "undefined"
+        ? []
+        : user._questions
+      : user.questions,
+    typeof user.medicalHistory === "undefined"
+      ? typeof user._medicalHistory === "undefined"
+        ? ""
+        : user._medicalHistory
+      : user.medicalHistory,
     typeof user.files === "undefined" ? [] : user.files,
     user.UID
   );
