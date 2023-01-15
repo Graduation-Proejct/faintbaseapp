@@ -8,6 +8,7 @@ const dbRoute = require("./routes/login_signup_route.js");
 const app = express();
 
 
+
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
